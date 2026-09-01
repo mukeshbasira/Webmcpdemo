@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0d0f13;
+  --color-panel: #14171d;
+  --color-floor: #1a1e26;
+  --color-line: #2b303b;
+  --color-wall: #3d4352;
+  --color-ink: #e8eaf0;
+  --color-mute: #8b93a7;
+  --color-accent: #f5b544;
+  --color-red: #ff5d5d;
+  --color-green: #4fd68a;
+  --color-glass: #7fc7ff;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+html, body, #root { height: 100%; }
+body { background: var(--color-bg); color: var(--color-ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+
+.item { transition: transform 600ms cubic-bezier(.2,.8,.2,1); cursor: grab; }
+.item.dragging { transition: none; cursor: grabbing; }
+.rot { transition: transform 600ms cubic-bezier(.2,.8,.2,1); }
+@keyframes walk { to { stroke-dashoffset: -32 } }
+.walk { animation: walk 1s linear infinite; }
+.item:hover .glyph-body { filter: brightness(1.15); }
+
+@keyframes pulse { 0%,100% { opacity: .9 } 50% { opacity: .35 } }
+.pulse { animation: pulse 1.4s ease-in-out infinite; }
+@keyframes rise { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+.rise { animation: rise 320ms ease-out both; }
+@keyframes pop { from { transform: scale(.6); opacity: 0 } to { transform: none; opacity: 1 } }
+.pop { animation: pop 260ms cubic-bezier(.2,.8,.2,1) both; transform-origin: center; transform-box: fill-box; }
+@keyframes flash { 0% { opacity: 1; transform: scale(1) } 100% { opacity: 0; transform: scale(1.06) } }
+.flash { animation: flash 1.5s ease-out both; transform-origin: center; transform-box: fill-box; pointer-events: none; }
+@keyframes fade { 0%,70% { opacity: 1 } 100% { opacity: 0 } }
+.fade { animation: fade 4s ease-out both; }
+.tick { transition: color 300ms, background 300ms; }
+
+/* 3D overlays */
+.label3d { font: 11px/1 var(--font-mono); color: #e8eaf0; background: rgba(13,15,19,.85); border: 1px solid #2b303b; padding: 3px 7px; border-radius: 5px; white-space: nowrap; }
+.bubble3d { background: #0d0f13; border: 1px solid #2b303b; border-left: 3px solid #e8eaf0; border-radius: 8px; padding: 8px 10px; max-width: 240px; font: 12px/1.35 var(--font-sans); color: #e8eaf0; box-shadow: 0 6px 20px rgba(0,0,0,.45); }
+.bubble3d .b-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+.bubble3d .b-verdict { font-size: 10.5px; margin-top: 4px; opacity: .95; }
+.bubble3d .b-chips { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+.chip { font: 11px var(--font-sans); padding: 2px 8px; border-radius: 999px; border: 1px solid #2b303b; background: transparent; color: #8b93a7; cursor: pointer; }
+.chip-yes { border-color: #4fd68a; color: #4fd68a; } .chip-no { border-color: #ff5d5d; color: #ff5d5d; } .chip-opt { border-color: #f5b544; color: #f5b544; }
+.chip:hover { filter: brightness(1.3); }
+/* a tool that has just appeared in the agent's list */
+@keyframes flashIn { 0% { background: color-mix(in srgb, var(--color-accent) 35%, transparent) } 100% { background: transparent } }
+.flash-in { animation: flashIn 2.2s ease-out both; }
+
+/* Every #f5d78a shape is the pool of light a fitting casts. It is decoration and must not be
+   grabbable: the ceiling light's glow is 240cm across, so it sat over the sofa and the coffee table
+   and caught every drag meant for them. A rule rather than a prop on each shape, because the next
+   light somebody draws gets it too. */
+svg [fill="#f5d78a"] { pointer-events: none }
+
+/* A focused control inside the plan has to show it. SVG ignores outline in most browsers, so the
+   chip's own border does the work. */
+svg [role="button"]:focus-visible { outline: none }
+svg [role="button"]:focus-visible rect { stroke: #f5b544; stroke-width: 2.5 }

@@ -1,0 +1,10 @@
+node_modules
+dist
+coverage
+.vercel
+.playwright-mcp
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+.DS_Store
+.env
+.env.*
